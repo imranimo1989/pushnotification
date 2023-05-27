@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:app_settings/app_settings.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,24 +8,36 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationServices {
-  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  void initLocalNotification(
-      BuildContext context, RemoteMessage message) async {
+
+  //Initialization flutter local notifications
+  void initLocalNotification(RemoteMessage message) async {
+
+    //Android Initialization Settings
     var androidInitializationSettings =
         const AndroidInitializationSettings("@mipmap/ic_launcher");
 
+    //Initialization Settings
     var initializationSettings = InitializationSettings(
       android: androidInitializationSettings,
     );
 
-    _flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onDidReceiveNotificationResponse: (payLoad) {});
-  }
+    //Flutter Local Notifications Plugin initializationSettings
+    await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: (payLoad) {
 
-  void firebaseMessageInit() async {
+
+        });
+  }//end initLocalNotification
+
+  //Firebase Message listen
+  void firebaseMessageInit(){
+
     FirebaseMessaging.onMessage.listen((message) {
       if (kDebugMode) {
         print(message.notification!.title);
@@ -35,31 +48,39 @@ class NotificationServices {
     });
   }
 
-  void showNotification(RemoteMessage message) async {
+  Future<void> showNotification(RemoteMessage message) async {
+
+    //Android Notification Channel Initialized
     AndroidNotificationChannel androidNotificationChannel =
-        AndroidNotificationChannel(Random.secure().nextInt(100000).toString(),
+        const AndroidNotificationChannel("id",
             "High Importance Notifications",
             importance: Importance.max);
 
+    //Android Notification Details
     AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-            androidNotificationChannel.id, androidNotificationChannel.name,
+            androidNotificationChannel.id.toString(),
+            androidNotificationChannel.name.toString(),
             channelDescription: "Notification Description",
             importance: Importance.high,
             priority: Priority.high,
-            ticker: "ticker");
+            ticker: "ticker");//end
+
+    //Declare Notification For Device Android or IOS
     NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-    
+        NotificationDetails(
+            android: androidNotificationDetails);//end
+
+    //Get Future Notification
     Future.delayed(Duration.zero,(){
       _flutterLocalNotificationsPlugin.show(
           0,
           message.notification!.title.toString(),
           message.notification!.body.toString(),
           notificationDetails);
-    });
+    });//end
 
-  }
+  }///end showNotification method
 
   void requestNotificationPermission() async {
     NotificationSettings settings = await firebaseMessaging.requestPermission(
@@ -76,7 +97,7 @@ class NotificationServices {
     } else if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print("User provisional permission granted ");
     } else {
-      print("user permission denied");
+      AppSettings.openNotificationSettings();
     }
   }
 
@@ -88,7 +109,8 @@ class NotificationServices {
   void onRefreshDeviceToken() async {
     firebaseMessaging.onTokenRefresh.listen((event) {
       event.toString();
+      print("refresh device token $event");
     });
-    print("refresh device token");
+
   }
 }

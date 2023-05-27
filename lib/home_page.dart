@@ -19,13 +19,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
 
+
+
     notificationServices.requestNotificationPermission();
-    notificationServices.onRefreshDeviceToken();
+    notificationServices.firebaseMessageInit();
+   // notificationServices.onRefreshDeviceToken();
     notificationServices.getDeviceToken().then((value) => {
       print("Firebase Token: $value")
     });
 
-    notificationServices.firebaseMessageInit();
 
 
     super.initState();
