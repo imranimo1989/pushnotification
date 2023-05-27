@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "451534347112",
+    "project_id": "fir-pushnotification-1be78",
+    "storage_bucket": "fir-pushnotification-1be78.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451534347112:android:97dcb29bd4375e6dd6d4dd",
+        "android_client_info": {
+          "package_name": "com.mdimran.pushnotification"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXW4Zze3x5EkPCsDP7rZBnrrNDbf5Ai2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
